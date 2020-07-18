@@ -12,7 +12,7 @@ exports.create = (req, res) => {
   // Create a Customer
   const userInfo = new UserInfo({
     email: req.body.email,
-    name: req.body.username,
+    username: req.body.username,
     password: req.body.password,
     create_time: new Date()
   });
