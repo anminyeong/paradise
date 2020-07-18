@@ -1,7 +1,7 @@
 const sql = require("./db.js");
 
 // constructor
-const UserInfo = function(customer) {
+const MyPoint = function(customer) {
   this.email = customer.email;
   this.username = customer.username;
   this.password = customer.password;
@@ -10,21 +10,21 @@ const UserInfo = function(customer) {
 
 
 
-UserInfo.create = (newCustomer, result) => {
-  sql.query("INSERT INTO user SET ?", newCustomer, (err, res) => {
+MyPoint.create = (newCustomer, result) => {
+  sql.query("INSERT INTO my_point SET ?", newCustomer, (err, res) => {
     if (err) {
       console.log("error: ", err);
       result(err, null);
       return;
     }
 
-    console.log("created UserInfo: ", { id: res.insertId, ...newCustomer });
+    console.log("created MyPoint: ", { id: res.insertId, ...newCustomer });
     result(null, { id: res.insertId, ...newCustomer });
   });
 };
 
-UserInfo.findById = (email, result) => {
-  sql.query(`SELECT * FROM user WHERE email = '${email}'`, (err, res) => {
+MyPoint.findByEmail = (email, result) => {
+  sql.query(`SELECT * FROM my_point WHERE user_email = '${email}'`, (err, res) => {
     if (err) {
       console.log("error: ", err);
       result(err, null);
@@ -32,32 +32,32 @@ UserInfo.findById = (email, result) => {
     }
 
     if (res.length) {
-      console.log("found user: ", res[0]);
-      result(null, res[0]);
+      console.log("found my_point: ", res[0]);
+      result(null, res);
       return;
     }
 
-    // not found UserInfo with the id
+    // not found MyPoint with the id
     result({ kind: "not_found" }, null);
   });
 };
 
-UserInfo.getAll = result => {
-  sql.query("SELECT * FROM user", (err, res) => {
+MyPoint.getAll = result => {
+  sql.query("SELECT * FROM my_point", (err, res) => {
     if (err) {
       console.log("error: ", err);
       result(null, err);
       return;
     }
 
-    console.log("user: ", res);
+    console.log("my_point: ", res);
     result(null, res);
   });
 };
 
-UserInfo.updateById = (id, customer, result) => {
+MyPoint.updateById = (id, customer, result) => {
   sql.query(
-    "UPDATE user SET email = ?, name = ?, active = ? WHERE id = ?",
+    "UPDATE my_point SET email = ?, name = ?, active = ? WHERE id = ?",
     [customer.email, customer.name, customer.active, id],
     (err, res) => {
       if (err) {
@@ -67,19 +67,19 @@ UserInfo.updateById = (id, customer, result) => {
       }
 
       if (res.affectedRows == 0) {
-        // not found UserInfo with the id
+        // not found MyPoint with the id
         result({ kind: "not_found" }, null);
         return;
       }
 
-      console.log("updated user: ", { id: id, ...customer });
+      console.log("updated my_point: ", { id: id, ...customer });
       result(null, { id: id, ...customer });
     }
   );
 };
 
-UserInfo.remove = (id, result) => {
-  sql.query("DELETE FROM user WHERE id = ?", id, (err, res) => {
+MyPoint.remove = (id, result) => {
+  sql.query("DELETE FROM my_point WHERE id = ?", id, (err, res) => {
     if (err) {
       console.log("error: ", err);
       result(null, err);
@@ -87,27 +87,27 @@ UserInfo.remove = (id, result) => {
     }
 
     if (res.affectedRows == 0) {
-      // not found UserInfo with the id
+      // not found MyPoint with the id
       result({ kind: "not_found" }, null);
       return;
     }
 
-    console.log("deleted user with id: ", id);
+    console.log("deleted my_point with id: ", id);
     result(null, res);
   });
 };
 
-UserInfo.removeAll = result => {
-  sql.query("DELETE FROM user", (err, res) => {
+MyPoint.removeAll = result => {
+  sql.query("DELETE FROM my_point", (err, res) => {
     if (err) {
       console.log("error: ", err);
       result(null, err);
       return;
     }
 
-    console.log(`deleted ${res.affectedRows} user`);
+    console.log(`deleted ${res.affectedRows} my_point`);
     result(null, res);
   });
 };
 
-module.exports = UserInfo;
+module.exports = MyPoint;
