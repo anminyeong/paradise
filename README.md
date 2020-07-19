@@ -1,2 +1,4 @@
-# paradise
-angel hack
+#angel hack
+파라다이스 앱 서버 API 저장소 입니다.
+
+db설계 : paradise_db.png
