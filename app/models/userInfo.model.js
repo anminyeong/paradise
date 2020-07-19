@@ -9,7 +9,6 @@ const UserInfo = function(customer) {
 };
 
 
-
 UserInfo.create = (newCustomer, result) => {
   sql.query("INSERT INTO user SET ?", newCustomer, (err, res) => {
     if (err) {

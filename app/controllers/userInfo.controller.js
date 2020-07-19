@@ -23,15 +23,28 @@ exports.login = (req, res) => {
   }
 
   const email = req.body.email
+  const password = req.body.password
   UserInfo.findById(email, (err, userInfoData) => {
     if (err) {
       if (err.kind === "not_found") {
-        res.status(404).send({
-          status : {
-            code : 0,
-            message: `Not found users with email ${req.params.email}.`
-          }
-        });
+
+        const userInfo = new UserInfo({
+          email : email,
+          username : req.body.username,
+          password : password,
+          create_time : new Date()
+        })
+
+        UserInfo.create( userInfo, (err, data) => {
+          if (err)
+            res.status(500).send({
+              message:
+                err.message || "Some error occurred while creating the Customer."
+            });
+          else res.send(data);
+        })
+
+       
       } else {
         res.status(500).send({
           status : {
@@ -41,20 +54,30 @@ exports.login = (req, res) => {
         });
       }
     } else {
+
+      if(password !== userInfoData.password) {
+        res.status(400).send({
+          status : {
+            code : 0,
+            message: "비밀번호가 맞지 않습니다."
+          }
+        });
+      }
+
       MyPoint.findByEmail( email, (err, users) => {
         if (err) {
           if (err.kind === "not_found") {
             res.status(404).send({
               status : {
                 code : 0,
-                message: `Not found users with email ${req.params.email}.`
+                message: `Not found point with email ${req.params.email}.`
               }
             });
           } else {
             res.status(500).send({
               status : {
                 code : 0,
-                message: "Error retrieving users with email " + req.params.email
+                message: "Error retrieving point with email " + req.params.email
               }
             });
           }
@@ -83,14 +106,14 @@ exports.login = (req, res) => {
               res.send({
                 status : {
                   code : 0,
-                  message: `Not found Customer with email ${req.params.email}.`
+                  message: `success`
                 },
                 user 
               });
         } 
       })
     }
-  })
+  }) 
 
   // Create a Customer
   // const userInfo = new UserInfo({
